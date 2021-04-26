@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-const users = const {
+
+Map<String,String> users =  {
   'dribbble@gmail.com': '12345',
   'hunter@gmail.com': 'hunter',
   'Warat_Admin@gmail.com': '0841153409',
@@ -109,7 +110,9 @@ class _LoginPageState extends State<LoginPage> {
           style: TextStyle(color: Colors.orangeAccent),
         )
       ],
-    ));
+    ),onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => SignupWidget()));
+    },);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -227,6 +230,105 @@ class _ForgetpasswordWidgetState extends State<ForgetpasswordWidget> {
   }
 }
 
+class SignupWidget extends StatefulWidget {
+  @override
+  _SignupdWidgetState createState() => _SignupdWidgetState();
+
+}
+
+class _SignupdWidgetState extends State<SignupWidget> {
+  static final mySignupEmail = new TextEditingController();
+  static final mySignupPassword = new TextEditingController();
+  static final confirmPassword = new TextEditingController();
+
+  final logo = Hero(
+    tag: 'hero',
+    child: CircleAvatar(
+      backgroundColor: Colors.transparent,
+      radius: 100.0,
+      child: Image.asset(
+        'assets/logo.png',
+        width: 200,
+        height: 200,
+      ),
+    ),
+  );
+  final email = TextFormField(
+    keyboardType: TextInputType.emailAddress,
+    autofocus: false,
+    decoration: InputDecoration(
+      hintText: 'Email',
+      contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+    ),
+    controller: mySignupEmail,
+  );
+  final password = TextFormField(
+    obscureText: false,
+    autofocus: false,
+    decoration: InputDecoration(
+      hintText: 'Password',
+      contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+    ),
+    controller: mySignupPassword,
+  );
+  final conPassword = TextFormField(
+    obscureText: false,
+    autofocus: false,
+    decoration: InputDecoration(
+      hintText: 'Confirm Password',
+      contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+    ),
+    controller: confirmPassword,
+  );
+  final SignupButton = Padding(
+    padding: EdgeInsets.symmetric(vertical: 16.0),
+    child: RaisedButton(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+      ),
+      onPressed: () {
+
+        if (!users.containsKey(mySignupEmail.text)) {
+          print("Account: ${users[mySignupEmail.text]} created! with ${mySignupPassword.text}");
+          users.addAll({'${mySignupEmail.text}':'${mySignupPassword.text}'});
+
+        } else {
+          print("This account is already exist");
+
+        }
+      },
+      padding: EdgeInsets.all(12),
+      color: Colors.orangeAccent,
+      child: Text('Sign up', style: TextStyle(color: Colors.white)),
+    ),
+  );
+  @override
+  Widget build(BuildContext context) {
+    // Figma Flutter Generator ForgetpasswordWidget - FRAME
+
+    return Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+            child: ListView(
+                shrinkWrap: true,
+                padding: EdgeInsets.only(left: 24.0, right: 24.0),
+                children: <Widget>[
+                  logo,
+                  SizedBox(height: 48.0),
+                  email,
+                  SizedBox(height: 24.0),
+                  password,
+                  SizedBox(height: 24.0),
+                  conPassword,
+                  SizedBox(height: 24.0),
+                  SignupButton,
+                ])));
+  }
+}
+
 class Menu extends StatefulWidget {
   @override
   _Menu createState() => _Menu();
@@ -259,11 +361,12 @@ class _Menu extends State<Menu> {
                         color: Color.fromRGBO(255, 160, 0, 1),
                       ))),
               Positioned(
-                  top: 254,
-                  left: 82,
-                  child: Text(
+                  top: 247,
+                  left: 66,
+                  child: FlatButton(
+                      child:Text(
                     'Calories calculation',
-                    textAlign: TextAlign.left,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Color.fromRGBO(0, 0, 0, 1),
                         fontFamily: 'Rokkitt',
@@ -272,7 +375,9 @@ class _Menu extends State<Menu> {
                             0 /*percentages not used in flutter. defaulting to zero*/,
                         fontWeight: FontWeight.normal,
                         height: 1),
-                  )),
+                  ),onPressed: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> CaloriesPage()));
+                  },)),
               Positioned(
                   top: 520,
                   left: 62,
@@ -1109,5 +1214,256 @@ class _ExercisePlan extends State<ExercisePlan> {
                         height: 1),
                   )),
             ])));
+  }
+}
+class CaloriesPage extends StatefulWidget {
+  @override
+  _CaloriesPageState createState() => _CaloriesPageState();
+}
+
+class _CaloriesPageState extends State<CaloriesPage> {
+  double poids;
+  int calorieBase;
+  int calorieActivite;
+  bool genre = false;
+  double age;
+  double taille = 170.0;
+  int ExerciseSelection;
+  Map mapActivite = {
+    0: "Running",
+    1: "Swimming",
+    2: "Push-up",
+    3: "Stretching",
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return new GestureDetector(
+        onTap: (() => FocusScope.of(context).requestFocus(new FocusNode())),
+        child: new Scaffold(
+          appBar: AppBar(
+          title: Text("Calories Calculation"),
+            backgroundColor: setColor(),
+          ),
+          body: Center(
+            child: new SingleChildScrollView(
+              padding: EdgeInsets.all(15.0),
+              child: new Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  padding(),
+                  texteAvecStyle("Fill in all the fields to get your daily calorie requirement"),
+                  padding(),
+                  new Card(
+                    elevation: 10.0,
+                    child: new Column(
+                      children: <Widget>[
+                        padding(),
+                        new Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            texteAvecStyle("Female", color: Colors.pink),
+                            new Switch(
+                                value: genre,
+                                inactiveTrackColor: Colors.pink,
+                                activeTrackColor: Colors.blue,
+                                onChanged: (bool b) {
+                                  setState(() {
+                                    genre = b;
+                                  });
+                                }),
+                            texteAvecStyle("Male", color: Colors.blue)
+                          ],
+                        ),
+                        padding(),
+                        new RaisedButton(
+                          onPressed: () => montrerPicker(),
+                          color: setColor(),
+                          child: texteAvecStyle(
+                            age == null ? "Enter your age" : "Your age is : ${age.toInt()} years",
+                            color: Colors.white,),
+
+                        ),
+                        padding(),
+                        texteAvecStyle("Your Height : ${taille.toInt()} cm.", color: setColor()),
+                        padding(),
+                        new Slider(
+                            value: taille,
+                            min: 100.0,
+                            max: 215.0,
+                            activeColor: setColor(),
+                            onChanged: (double d) {
+                              setState(() {
+                                taille = d;
+                              });
+                            }),
+                        padding(),
+                        new TextField(
+                          keyboardType: TextInputType.number,
+                          onChanged: (String str) {
+                            setState(() {
+                              poids = double.tryParse(str);
+                            });
+                          },
+                          decoration: new InputDecoration(
+                              labelText: "Enter your weight (Kg.)"
+                          ),
+                        ),
+                        padding(),
+                        texteAvecStyle("Exercise Activity ?", color: setColor()),
+                        padding(),
+                        rowRadio()
+                      ],
+                    ),
+                  ),
+                  padding(),
+                  new RaisedButton(
+                      color: setColor(),
+                      child: texteAvecStyle("Calculate", color: Colors.white),
+                      onPressed: calculaterNumberOfCalories)
+                ],
+              ),
+            ),
+          ),
+        )
+    );
+  }
+
+  Row rowRadio() {
+    List<Widget> l = [];
+    mapActivite.forEach((key, value) {
+      Column colonne = new Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          new Radio(
+              value: key,
+              activeColor: setColor(),
+              groupValue: ExerciseSelection,
+              onChanged: (Object i) {
+                setState(() {
+                  ExerciseSelection = i;
+                });
+              }),
+          texteAvecStyle(value, color: setColor())
+        ],
+      );
+      l.add(colonne);
+    });
+    return new Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: l,
+    );
+  }
+
+  Padding padding() {
+    return new Padding(padding: EdgeInsets.only(top: 20));
+  }
+
+  Future<Null> montrerPicker() async{
+    DateTime choix = await showDatePicker(
+        context: context,
+        initialDate: new DateTime.now(),
+        firstDate: new DateTime(1900),
+        lastDate: new DateTime.now(),
+        initialDatePickerMode: DatePickerMode.year
+    );
+    if (choix != null) {
+      Duration difference = new DateTime.now().difference(choix);
+      int jours = difference.inDays;
+      setState(() {
+        age = jours / 365;
+      });
+    }
+  }
+
+  Color setColor() {
+    return Colors.orange;
+  }
+
+  Text texteAvecStyle(String data, {color: Colors.black, fontSize: 15.0}) {
+    return new Text(
+      data,
+      textAlign: TextAlign.center,
+      style: new TextStyle(
+          color: color,
+          fontSize: fontSize),
+    );
+  }
+
+  void calculaterNumberOfCalories() {
+    if (age != null && poids != null && ExerciseSelection != null) {
+      if (genre)
+        calorieBase = (66.4730 + (13.7516 * poids) + (5.0033 * taille) - (6.7550 * age)).toInt();
+      else
+        calorieBase = (655.0955 + (9.5634 * poids) + (1.8496 * taille) - (4.6756 * age)).toInt();
+      switch(ExerciseSelection) {
+        case 0:
+          calorieActivite = 353;
+          break;
+        case 1:
+          calorieActivite = 280;
+          break;
+        case 2:
+          calorieActivite = 210;
+          break;
+        case 3:
+          calorieActivite =  85;
+          break;
+        default:
+          calorieActivite = 0;
+          break;
+      }
+      setState(() {
+        dialog();
+      });
+    } else{
+      alert();
+    }
+  }
+
+  Future<Null> dialog() async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext bc) {
+          return SimpleDialog(
+            title: texteAvecStyle("Your calories need", color: setColor()),
+            children: <Widget>[
+              padding(),
+              texteAvecStyle("Basic calories need : ${calorieBase}"),
+              padding(),
+              texteAvecStyle("30 mins of your select activity burn around: $calorieActivite"),
+              padding(),
+              new RaisedButton(
+                  color: setColor(),
+                  child: texteAvecStyle('OK', color: Colors.white),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  })
+            ],
+          );
+        }
+    );
+  }
+
+  Future<Null> alert() async {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext buildContext) {
+          return new AlertDialog(
+            title: texteAvecStyle("Error!"),
+            content: texteAvecStyle("Please fill all the provide section"),
+          actions: <Widget>[
+              new FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: texteAvecStyle("OK", color: Colors.red)
+              )
+            ],
+          );
+        }
+    );
   }
 }
